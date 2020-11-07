@@ -39,11 +39,15 @@
 
         //To change the background color
         app.renderer.backgroundColor = 0x6AA84F;
-
+        let asset_uris = ["images/rocket_1.png", "images/enemy_shuttle_1.jpg", "images/enemy_shuttle_3.jpg", "images/enemy_shuttle_2.png"]
         // Add sprite for main spaceship
         //load an image and run the `setup` function when it's done
+        // TODOs the below implementation sux
         PIXI.loader
-            .add("images/rocket_1.png")
+            .add(asset_uris[0])
+            .add(asset_uris[1])
+            .add(asset_uris[2])
+            .add(asset_uris[3])
             .load(setup);
 
         let left = keyboard("ArrowLeft"),
@@ -53,24 +57,16 @@
             space = keyboard("Space");
 
         let main_rocket;
-        let enemy_rocket = [];
+        let enemy_rockets = [];
 
         //This `setup` function will run when the image has loaded
         function setup() {
 
-            //Create the cat sprite
-            // main_rocket = new PIXI.Sprite(PIXI.loader.resources["images/rocket_1.png"].texture);
-            main_rocket = new Sprite(resources["images/rocket_1.png"].texture);
-            main_rocket.anchor.x = 0.5;
-            main_rocket.anchor.y = 0.5;
-            main_rocket.vx = 1;
-            main_rocket.vy = 1;
-            main_rocket.width = 30;
-            main_rocket.height = 120;
+            //Create the main rocket sprite
+            initiateMainRocketSprite();
 
-            // position sprite
-            main_rocket.x = Math.ceil((Math.random() * (window.innerWidth) / 2 + (window.innerWidth) / 4));
-            main_rocket.y = Math.ceil((Math.random() * (window.innerHeight) / 4 + (window.innerHeight) / 2));
+            // create enemy rockets
+            initiateEnemyRocketSprites();
 
             //Add the cat to the stage
             app.stage.addChild(main_rocket);
@@ -160,6 +156,33 @@
             };
 
             return key;
+        }
+
+
+        function initiateMainRocketSprite() {
+            main_rocket = new Sprite(resources[asset_uris[0]].texture);
+            main_rocket.anchor.x = 0.5;
+            main_rocket.anchor.y = 0.5;
+            main_rocket.vx = 1;
+            main_rocket.vy = 1;
+            main_rocket.width = 30;
+            main_rocket.height = 120;
+
+            // position sprite
+            main_rocket.x = Math.ceil((Math.random() * (window.innerWidth) / 2 + (window.innerWidth) / 4));
+            main_rocket.y = Math.ceil((Math.random() * (window.innerHeight) / 4 + (window.innerHeight) / 2));
+        }
+
+        function initiateEnemyRocketSprites() {
+            for (let index = 1; index < asset_uris.length; index++) {
+                enemy_rockets.push(new Sprite(resources[asset_uris[index]].texture))
+            }
+            main_rocket.anchor.x = 0.5;
+            main_rocket.anchor.y = 0.5;
+            main_rocket.vx = 1;
+            main_rocket.vy = 1;
+            main_rocket.width = 30;
+            main_rocket.height = 120;
         }
     </script>
 </body>
