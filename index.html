@@ -165,8 +165,7 @@
             main_rocket.anchor.y = 0.5;
             main_rocket.vx = 1;
             main_rocket.vy = 1;
-            main_rocket.width = 30;
-            main_rocket.height = 120;
+            main_rocket.scale.set(0.07, 0.07);
 
             // position sprite
             main_rocket.x = Math.ceil((Math.random() * (window.innerWidth) / 2 + (window.innerWidth) / 4));
@@ -181,11 +180,13 @@
             for (let index = 1; index < asset_uris.length; index++) {
                 enemy_rockets.push(new Sprite(resources[asset_uris[index]].texture))
                 enemy_rockets[index - 1].x = Math.ceil((Math.random() * (window.innerWidth) / 2 + (window.innerWidth) / 4));
-                enemy_rockets[index - 1].y = Math.ceil((Math.random() * (window.innerHeight) / 4));
+                enemy_rockets[index - 1].y = Math.ceil((Math.random() * (window.innerHeight) / 4 + (window.innerHeight) / 10));
+                // enemy_rockets[index - 1].scale.x = 1
+                // enemy_rockets[index - 1].scale.y = 1
+                enemy_rockets[index - 1].scale.set(0.2, 0.2);
                 enemy_rockets[index - 1].vx = 1;
                 enemy_rockets[index - 1].vy = 1;
-                enemy_rockets[index - 1].width = 30;
-                enemy_rockets[index - 1].height = 120;
+                enemy_rockets[index - 1].rotation = Math.PI;
                 enemies.addChild(enemy_rockets[index - 1]);
             }
 
