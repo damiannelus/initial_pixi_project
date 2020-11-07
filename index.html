@@ -8,8 +8,6 @@
 
         //Create a Pixi Application
         let app = new PIXI.Application({
-            width: 256,
-            height: 256,
             antialiasing: true,
             transparent: false,
             resolution: 1
@@ -21,6 +19,10 @@
 
         //If you want to make the canvas fill the entire window, you can apply this
         //CSS styling:
+        app.renderer.view.style.position = "absolute"
+        app.renderer.view.style.width = window.innerWidth + "px";
+        app.renderer.view.style.height = window.innerHeight + "px";
+        app.renderer.view.style.display = "block";
 
         //The `renderer.view` is just an ordinary `<canvas>` element.
         //Here's how you can reference to add an optional dashed 
@@ -28,10 +30,34 @@
         // app.renderer.view.style.border = "1px dashed black";
 
         //To resize the canvas
-        app.renderer.resize(512, 512);
+        app.renderer.resize(window.innerWidth, window.innerHeight);
 
         //To change the background color
         app.renderer.backgroundColor = 0x6AA84F;
 
+        // Add sprite for main spaceship
+        //load an image and run the `setup` function when it's done
+        PIXI.loader
+            .add("images/rocket_1.png")
+            .load(setup);
+
+        //This `setup` function will run when the image has loaded
+        function setup() {
+
+            //Create the cat sprite
+            let main_rocket = new PIXI.Sprite(PIXI.loader.resources["images/rocket_1.png"].texture);
+            main_rocket.width = 30;
+            main_rocket.height = 120;
+
+            // position sprite
+            main_rocket.x = Math.ceil(Math.random() * window.innerWidth);
+            main_rocket.y = Math.ceil(Math.random() * window.innerHeight);
+
+            console.log(main_rocket.x)
+            console.log(main_rocket.y)
+
+            //Add the cat to the stage
+            app.stage.addChild(main_rocket);
+        }
     </script>
 </body>
