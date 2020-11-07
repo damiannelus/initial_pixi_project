@@ -39,10 +39,10 @@
 
         //To change the background color
         app.renderer.backgroundColor = 0x6AA84F;
-        let asset_uris = ["images/rocket_1.png", "images/enemy_shuttle_1.jpg", "images/enemy_shuttle_3.jpg", "images/enemy_shuttle_2.png"]
+        let asset_uris = ["images/rocket_1.png", "images/enemy_shuttle_1.png", "images/enemy_shuttle_3.png", "images/enemy_shuttle_2.png"]
         // Add sprite for main spaceship
         //load an image and run the `setup` function when it's done
-        // TODOs the below implementation sux
+        // TODOs the below implementation sucks
         PIXI.loader
             .add(asset_uris[0])
             .add(asset_uris[1])
@@ -58,6 +58,7 @@
 
         let main_rocket;
         let enemy_rockets = [];
+        let enemies = new PIXI.Container();
 
         //This `setup` function will run when the image has loaded
         function setup() {
@@ -67,9 +68,6 @@
 
             // create enemy rockets
             initiateEnemyRocketSprites();
-
-            //Add the cat to the stage
-            app.stage.addChild(main_rocket);
 
             state = play;
             //Start the game loop by adding the `gameLoop` function to
@@ -91,6 +89,8 @@
             // main_rocket.y = steering_wheel > 0.5 ? main_rocket.y + main_rocket.vy : main_rocket.y - main_rocket.vy;
             // main_rocket.y = main_rocket.y < 0 ? 0 : main_rocket.y
 
+            // TODO move enemies
+            // TODO continue https://github.com/kittykatattack/learningPixi#using-a-particlecontainer-to-group-sprites
             // Move
             if (right.isDown) {
                 main_rocket.x += main_rocket.vx
@@ -171,18 +171,25 @@
             // position sprite
             main_rocket.x = Math.ceil((Math.random() * (window.innerWidth) / 2 + (window.innerWidth) / 4));
             main_rocket.y = Math.ceil((Math.random() * (window.innerHeight) / 4 + (window.innerHeight) / 2));
+
+            //Add the mr to the stage
+            app.stage.addChild(main_rocket);
+            
         }
 
         function initiateEnemyRocketSprites() {
             for (let index = 1; index < asset_uris.length; index++) {
                 enemy_rockets.push(new Sprite(resources[asset_uris[index]].texture))
+                enemy_rockets[index - 1].x = Math.ceil((Math.random() * (window.innerWidth) / 2 + (window.innerWidth) / 4));
+                enemy_rockets[index - 1].y = Math.ceil((Math.random() * (window.innerHeight) / 4));
+                enemy_rockets[index - 1].vx = 1;
+                enemy_rockets[index - 1].vy = 1;
+                enemy_rockets[index - 1].width = 30;
+                enemy_rockets[index - 1].height = 120;
+                enemies.addChild(enemy_rockets[index - 1]);
             }
-            main_rocket.anchor.x = 0.5;
-            main_rocket.anchor.y = 0.5;
-            main_rocket.vx = 1;
-            main_rocket.vy = 1;
-            main_rocket.width = 30;
-            main_rocket.height = 120;
+
+            app.stage.addChild(enemies);
         }
     </script>
 </body>
