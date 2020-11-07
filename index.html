@@ -41,23 +41,114 @@
             .add("images/rocket_1.png")
             .load(setup);
 
+        let left = keyboard("ArrowLeft"),
+            up = keyboard("ArrowUp"),
+            right = keyboard("ArrowRight"),
+            down = keyboard("ArrowDown"),
+            space = keyboard("Space");
+
+        let main_rocket;
+
         //This `setup` function will run when the image has loaded
         function setup() {
 
             //Create the cat sprite
-            let main_rocket = new PIXI.Sprite(PIXI.loader.resources["images/rocket_1.png"].texture);
+            main_rocket = new PIXI.Sprite(PIXI.loader.resources["images/rocket_1.png"].texture);
+            main_rocket.anchor.x = 0.5;
+            main_rocket.anchor.y = 0.5;
             main_rocket.width = 30;
             main_rocket.height = 120;
 
             // position sprite
-            main_rocket.x = Math.ceil(Math.random() * window.innerWidth);
-            main_rocket.y = Math.ceil(Math.random() * window.innerHeight);
-
-            console.log(main_rocket.x)
-            console.log(main_rocket.y)
+            main_rocket.x = Math.ceil((Math.random() * window.innerWidth));
+            main_rocket.y = Math.ceil((Math.random() * window.innerHeight));
 
             //Add the cat to the stage
             app.stage.addChild(main_rocket);
+
+            state = play;
+            //Start the game loop by adding the `gameLoop` function to
+            //Pixi's `ticker` and providing it with a `delta` argument.
+            app.ticker.add(delta => gameLoop(delta));
+        }
+
+        function gameLoop(delta) {
+            state(delta)
+        }
+
+        function play(delta) {
+            // Update the velocity:
+            main_rocket.vx = 1;
+            main_rocket.vy = 1;
+
+            //Move the cat 1 pixel:
+            // let steering_wheel = Math.random();
+            // main_rocket.x = steering_wheel > 0.5 ? main_rocket.x + main_rocket.vx : main_rocket.x - main_rocket.vx;
+            // main_rocket.x = main_rocket.x < 0 ? 0 : main_rocket.x
+            // main_rocket.y = steering_wheel > 0.5 ? main_rocket.y + main_rocket.vy : main_rocket.y - main_rocket.vy;
+            // main_rocket.y = main_rocket.y < 0 ? 0 : main_rocket.y
+
+
+            //Rotate
+            if (left.isDown || down.isDown) {
+                rotateMainRocket("ccw");
+            } else if(up.isDown || right.isDown) {
+                rotateMainRocket("cw");
+            }
+        }
+
+        function rotateMainRocket(direction) {
+            main_rocket.rotation = direction == "cw" ? main_rocket.rotation + 0.1 : main_rocket.rotation - 0.1
+            // main_rocket.rotation += 0.5
+            console.log(direction)
+        }
+
+        // TODO: prob. better way of managing keyboard
+        function keyboard(value) {
+            let key = {};
+            key.value = value;
+            key.isDown = false;
+            key.isUp = true;
+            key.press = undefined;
+            key.release = undefined;
+            //The `downHandler`
+            key.downHandler = event => {
+                if (event.key === key.value) {
+                    if (key.isUp && key.press) key.press();
+                    key.isDown = true;
+                    key.isUp = false;
+                    event.preventDefault();
+                }
+            };
+
+            //The `upHandler`
+            key.upHandler = event => {
+                if (event.key === key.value) {
+                    if (key.isDown && key.release) key.release();
+                    key.isDown = false;
+                    key.isUp = true;
+                    event.preventDefault();
+                }
+            };
+
+            //Attach event listeners
+            const downListener = key.downHandler.bind(key);
+            const upListener = key.upHandler.bind(key);
+
+            window.addEventListener(
+                "keydown", downListener, false
+            );
+            window.addEventListener(
+                "keyup", upListener, false
+            );
+
+            // Detach event listeners
+            key.unsubscribe = () => {
+                window.removeEventListener("keydown", downListener);
+                window.removeEventListener("keyup", upListener);
+            };
+
+            return key;
         }
     </script>
 </body>
