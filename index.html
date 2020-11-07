@@ -90,6 +90,10 @@
             // main_rocket.y = main_rocket.y < 0 ? 0 : main_rocket.y
 
             // TODO move enemies
+            moveEnemies();
+
+            // Check collisions
+
             // TODO continue https://github.com/kittykatattack/learningPixi#using-a-particlecontainer-to-group-sprites
             // Move
             if (right.isDown) {
@@ -97,17 +101,18 @@
             } else if (left.isDown) {
                 main_rocket.x -= main_rocket.vx
             }
+            console.log(main_rocket.getGlobalPosition())
 
             //Rotate
-            if (down.isDown) {
-                rotateMainRocket("ccw");
-            } else if (up.isDown) {
-                rotateMainRocket("cw");
-            }
+            // if (down.isDown) {
+            //     rotateMainRocket("ccw");
+            // } else if (up.isDown) {
+            //     rotateMainRocket("cw");
+            // }
         }
 
         function rotateMainRocket(direction) {
-            main_rocket.rotation = direction == "cw" ? main_rocket.rotation + 0.1 : main_rocket.rotation - 0.1
+            main_rocket.rotation = direction == "cw" ? main_rocket.rotation + (Math.PI/20) : main_rocket.rotation - (Math.PI/20)
         }
 
         // TODO: prob. better way of managing keyboard
@@ -165,20 +170,20 @@
             main_rocket.anchor.y = 0.5;
             main_rocket.vx = 1;
             main_rocket.vy = 1;
-            main_rocket.scale.set(0.07, 0.07);
+            main_rocket.scale.set(0.05, 0.05);
 
             // position sprite
             main_rocket.x = Math.ceil((Math.random() * (window.innerWidth) / 2 + (window.innerWidth) / 4));
-            main_rocket.y = Math.ceil((Math.random() * (window.innerHeight) / 4 + (window.innerHeight) / 2));
+            main_rocket.y = Math.ceil((Math.random() * (window.innerHeight) / 4  + 10 * (window.innerHeight) / 16));
 
             //Add the mr to the stage
             app.stage.addChild(main_rocket);
-            
+
         }
 
         function initiateEnemyRocketSprites() {
-            for (let index = 1; index < asset_uris.length; index++) {
-                enemy_rockets.push(new Sprite(resources[asset_uris[index]].texture))
+            for (let index = 1; index < asset_uris.length*10; index++) {
+                enemy_rockets.push(new Sprite(resources[asset_uris[index%3 + 1]].texture))
                 enemy_rockets[index - 1].x = Math.ceil((Math.random() * (window.innerWidth) / 2 + (window.innerWidth) / 4));
                 enemy_rockets[index - 1].y = Math.ceil((Math.random() * (window.innerHeight) / 4 + (window.innerHeight) / 10));
                 // enemy_rockets[index - 1].scale.x = 1
@@ -191,6 +196,17 @@
             }
 
             app.stage.addChild(enemies);
+        }
+
+        function moveEnemies() {
+            enemy_rockets.forEach(element => {
+                let steering_wheel = Math.random();
+                element.x = steering_wheel > 0.5 ? element.x + element.vx : element.x - element.vx;
+                element.x = element.x < 0 ? 0 : element.x
+                element.y = (Math.ceil(steering_wheel*100) % 2) == 0 ? element.y + element.vy : element.y - element.vy;
+                console.log(Math.ceil(steering_wheel*100) % 2)
+                element.y = element.y < 0 ? 0 : element.y
+            });
         }
     </script>
 </body>
