@@ -39,7 +39,8 @@
 
         //To change the background color
         app.renderer.backgroundColor = 0x6AA84F;
-        let asset_uris = ["images/rocket_1.png", "images/enemy_shuttle_1.png", "images/enemy_shuttle_3.png", "images/enemy_shuttle_2.png"]
+        let asset_uris = ["images/rocket_1.png", "images/enemy_shuttle_1.png", "images/enemy_shuttle_3.png", "images/enemy_shuttle_2.png"];
+        let bomb_uri = ["images/bomb.png"];
         // Add sprite for main spaceship
         //load an image and run the `setup` function when it's done
         // TODOs the below implementation sucks
@@ -48,17 +49,19 @@
             .add(asset_uris[1])
             .add(asset_uris[2])
             .add(asset_uris[3])
+            .add(bomb_uri)
             .load(setup);
 
         let left = keyboard("ArrowLeft"),
             up = keyboard("ArrowUp"),
             right = keyboard("ArrowRight"),
             down = keyboard("ArrowDown"),
-            space = keyboard("Space");
+            space = keyboard("ShiftLeft");
 
         let main_rocket;
         let enemy_rockets = [];
         let enemies = new PIXI.Container();
+        let bombs = [];
 
         //This `setup` function will run when the image has loaded
         function setup() {
@@ -101,7 +104,21 @@
             } else if (left.isDown) {
                 main_rocket.x -= main_rocket.vx
             }
-            console.log(main_rocket.getGlobalPosition())
+
+            // move bombs
+            moveBombs();
+
+            // check enemies x bombs colisions
+            checkEnemiesHits();
+
+            destroyBombsOutsideStage();
+
+            main_rocket.shot_delay = main_rocket.shot_delay > 0 ? main_rocket.shot_delay - 1 : 0
+
+            // Shoots 
+            if (up.isDown) {
+                shotABomb()
+            }
 
             //Rotate
             // if (down.isDown) {
@@ -112,7 +129,7 @@
         }
 
         function rotateMainRocket(direction) {
-            main_rocket.rotation = direction == "cw" ? main_rocket.rotation + (Math.PI/20) : main_rocket.rotation - (Math.PI/20)
+            main_rocket.rotation = direction == "cw" ? main_rocket.rotation + (Math.PI / 20) : main_rocket.rotation - (Math.PI / 20)
         }
 
         // TODO: prob. better way of managing keyboard
@@ -166,15 +183,18 @@
 
         function initiateMainRocketSprite() {
             main_rocket = new Sprite(resources[asset_uris[0]].texture);
-            main_rocket.anchor.x = 0.5;
-            main_rocket.anchor.y = 0.5;
+            main_rocket.anchor.x = 0;
+            main_rocket.anchor.y = 0;
             main_rocket.vx = 1;
             main_rocket.vy = 1;
             main_rocket.scale.set(0.05, 0.05);
+            main_rocket.shot_delay = 0;
 
             // position sprite
-            main_rocket.x = Math.ceil((Math.random() * (window.innerWidth) / 2 + (window.innerWidth) / 4));
-            main_rocket.y = Math.ceil((Math.random() * (window.innerHeight) / 4  + 10 * (window.innerHeight) / 16));
+            // main_rocket.x = Math.ceil((Math.random() * (window.innerWidth) / 2 + (window.innerWidth) / 4));
+            // main_rocket.y = Math.ceil((Math.random() * (window.innerHeight) / 4 + 10 * (window.innerHeight) / 16));
+            main_rocket.x = 120;
+            main_rocket.y = Math.ceil((Math.random() * (window.innerHeight) / 4 + 10 * (window.innerHeight) / 16));
 
             //Add the mr to the stage
             app.stage.addChild(main_rocket);
@@ -182,9 +202,11 @@
         }
 
         function initiateEnemyRocketSprites() {
-            for (let index = 1; index < asset_uris.length*10; index++) {
-                enemy_rockets.push(new Sprite(resources[asset_uris[index%3 + 1]].texture))
-                enemy_rockets[index - 1].x = Math.ceil((Math.random() * (window.innerWidth) / 2 + (window.innerWidth) / 4));
+            for (let index = 1; index < asset_uris.length; index++) {
+                enemy_rockets.push(new Sprite(resources[asset_uris[index % 3 + 1]].texture))
+                // enemy_rockets[index - 1].x = Math.ceil((Math.random() * (window.innerWidth) / 2 + (window.innerWidth) / 4));
+                // enemy_rockets[index - 1].y = Math.ceil((Math.random() * (window.innerHeight) / 4 + (window.innerHeight) / 10));
+                enemy_rockets[index - 1].x = 120
                 enemy_rockets[index - 1].y = Math.ceil((Math.random() * (window.innerHeight) / 4 + (window.innerHeight) / 10));
                 // enemy_rockets[index - 1].scale.x = 1
                 // enemy_rockets[index - 1].scale.y = 1
@@ -199,14 +221,114 @@
         }
 
         function moveEnemies() {
-            enemy_rockets.forEach(element => {
-                let steering_wheel = Math.random();
-                element.x = steering_wheel > 0.5 ? element.x + element.vx : element.x - element.vx;
-                element.x = element.x < 0 ? 0 : element.x
-                element.y = (Math.ceil(steering_wheel*100) % 2) == 0 ? element.y + element.vy : element.y - element.vy;
-                console.log(Math.ceil(steering_wheel*100) % 2)
-                element.y = element.y < 0 ? 0 : element.y
+            // enemy_rockets.forEach(element => {
+            //     let steering_wheel = Math.random();
+            //     element.x = steering_wheel > 0.5 ? element.x + element.vx : element.x - element.vx;
+            //     element.x = element.x < 0 ? 0 : element.x
+            //     element.y = (Math.ceil(steering_wheel * 100) % 2) == 0 ? element.y + element.vy : element.y - element.vy;
+            //     element.y = element.y < 0 ? 0 : element.y
+            // });
+        }
+
+        function shotABomb() {
+            if (main_rocket.shot_delay == 0) {
+                main_rocket.shot_delay = 10;
+                console.log("shoot a bomb at: " + main_rocket.x + " x " + main_rocket.y)
+                let tmp = new Sprite(resources[bomb_uri].texture)
+                tmp.x = main_rocket.x;
+                tmp.y = main_rocket.y;
+                tmp.anchor.x = 0;
+                tmp.anchor.y = 0;
+                tmp.scale.set(1, 1);
+                tmp.vx = 1;
+                tmp.vy = 1;
+                bombs.push(tmp);
+                app.stage.addChild(tmp);
+            }
+        }
+
+        function moveBombs() {
+            bombs.forEach(element => {
+                // element.x -= element.vx;
+                element.y -= element.vy;
             });
+        }
+
+        function destroyBombsOutsideStage() {
+            if (bombs.length > 0) {
+                for (let index = 0; index < bombs.length; index++) {
+                    if (bombs[index].y < 0) {
+                        app.stage.removeChild(bombs[index]);
+                        bombs.shift();
+                    }
+
+                }
+            }
+        }
+
+        function checkEnemiesHits() {
+            bombs.forEach(b => {
+                enemy_rockets.forEach(er => {
+                    if (boxesIntersect(b, er)) {
+                        app.stage.removeChild(er);
+                    }
+                });
+            });
+        }
+
+        function hitTestRectangle(bomb, enemy) {
+
+            //Define the variables we'll need to calculate
+            let hit, combinedHalfWidths, combinedHalfHeights, vx, vy;
+
+            //hit will determine whether there's a collision
+            hit = false;
+
+            //Find the center points of each sprite
+            bomb.centerX = bomb.x + bomb.width / 2;
+            bomb.centerY = bomb.y + bomb.height / 2;
+            enemy.centerX = enemy.x + enemy.width / 2;
+            enemy.centerY = enemy.y + enemy.height / 2;
+
+            //Find the half-widths and half-heights of each sprite
+            enemy.halfWidth = enemy.width / 2;
+            enemy.halfHeight = enemy.height / 2;
+
+            //Calculate the distance vector between the sprites
+            dx = bomb.centerX - enemy.centerX;
+            dy = bomb.centerY - enemy.centerY;
+
+
+            //Check for a collision on the x axis
+            if (Math.abs(dx) < enemy.halfWidth) {
+                // console.log("vx : " + Math.abs(vx) + " enemy.halfWidth: " + enemy.halfWidth)
+                console.log("vy : " + Math.abs(vy) + " enemy.halfHeight: " + enemy.halfHeight)
+                //A collision might be occurring. Check for a collision on the y axis
+                if (Math.abs(dy) < enemy.halfHeight) {
+                    console.log("hit: true")
+                    //There's definitely a collision happening
+                    hit = true;
+                } else {
+
+                    //There's no collision on the y axis
+                    hit = false;
+                }
+            } else {
+
+                //There's no collision on the x axis
+                hit = false;
+            }
+
+            //`hit` will be either `true` or `false`
+            return hit;
+        };
+
+        function boxesIntersect(a, b) {
+            var ab = a.getBounds();
+            var bb = b.getBounds();
+            console.log('ab :>> ', ab);
+            console.log('bb :>> ', bb);
+            return ab.x + ab.width > bb.x && ab.x < bb.x + bb.width && ab.y + ab.height > bb.y && ab.y < bb.y + bb.height;
         }
     </script>
 </body>
