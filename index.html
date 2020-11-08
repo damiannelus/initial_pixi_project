@@ -4,6 +4,7 @@
 
 <body>
     <script src="js/pixi.min.js"></script>
+    <script src="js/bump.js"></script>
     <script>
 
         //Create a Pixi Application
@@ -62,6 +63,7 @@
         let enemy_rockets = [];
         let enemies = new PIXI.Container();
         let bombs = [];
+        let b = new Bump(PIXI);
 
         //This `setup` function will run when the image has loaded
         function setup() {
@@ -204,9 +206,7 @@
         function initiateEnemyRocketSprites() {
             for (let index = 1; index < asset_uris.length; index++) {
                 enemy_rockets.push(new Sprite(resources[asset_uris[index % 3 + 1]].texture))
-                // enemy_rockets[index - 1].x = Math.ceil((Math.random() * (window.innerWidth) / 2 + (window.innerWidth) / 4));
-                // enemy_rockets[index - 1].y = Math.ceil((Math.random() * (window.innerHeight) / 4 + (window.innerHeight) / 10));
-                enemy_rockets[index - 1].x = 120
+                enemy_rockets[index - 1].x = Math.ceil((Math.random() * (window.innerWidth) / 2 + (window.innerWidth) / 4));
                 enemy_rockets[index - 1].y = Math.ceil((Math.random() * (window.innerHeight) / 4 + (window.innerHeight) / 10));
                 // enemy_rockets[index - 1].scale.x = 1
                 // enemy_rockets[index - 1].scale.y = 1
@@ -239,7 +239,7 @@
                 tmp.y = main_rocket.y;
                 tmp.anchor.x = 0;
                 tmp.anchor.y = 0;
-                tmp.scale.set(1, 1);
+                tmp.scale.set(0.1);
                 tmp.vx = 1;
                 tmp.vy = 1;
                 bombs.push(tmp);
@@ -267,61 +267,63 @@
         }
 
         function checkEnemiesHits() {
-            bombs.forEach(b => {
-                enemy_rockets.forEach(er => {
-                    if (boxesIntersect(b, er)) {
-                        app.stage.removeChild(er);
+            bombs.forEach(bomb => {
+                enemy_rockets.forEach((er, index) => {
+                    if (b.hit(bomb, er)) {
+                        enemies.removeChild(er);
+                        enemy_rockets.splice(index, 1)
+                        console.log("rocket to be destroyed: " + index);
                     }
                 });
             });
         }
 
-        function hitTestRectangle(bomb, enemy) {
+        // function hitTestRectangle(bomb, enemy) {
 
-            //Define the variables we'll need to calculate
-            let hit, combinedHalfWidths, combinedHalfHeights, vx, vy;
+        //     //Define the variables we'll need to calculate
+        //     let hit, combinedHalfWidths, combinedHalfHeights, vx, vy;
 
-            //hit will determine whether there's a collision
-            hit = false;
+        //     //hit will determine whether there's a collision
+        //     hit = false;
 
-            //Find the center points of each sprite
-            bomb.centerX = bomb.x + bomb.width / 2;
-            bomb.centerY = bomb.y + bomb.height / 2;
-            enemy.centerX = enemy.x + enemy.width / 2;
-            enemy.centerY = enemy.y + enemy.height / 2;
+        //     //Find the center points of each sprite
+        //     bomb.centerX = bomb.x + bomb.width / 2;
+        //     bomb.centerY = bomb.y + bomb.height / 2;
+        //     enemy.centerX = enemy.x + enemy.width / 2;
+        //     enemy.centerY = enemy.y + enemy.height / 2;
 
-            //Find the half-widths and half-heights of each sprite
-            enemy.halfWidth = enemy.width / 2;
-            enemy.halfHeight = enemy.height / 2;
+        //     //Find the half-widths and half-heights of each sprite
+        //     enemy.halfWidth = enemy.width / 2;
+        //     enemy.halfHeight = enemy.height / 2;
 
-            //Calculate the distance vector between the sprites
-            dx = bomb.centerX - enemy.centerX;
-            dy = bomb.centerY - enemy.centerY;
+        //     //Calculate the distance vector between the sprites
+        //     dx = bomb.centerX - enemy.centerX;
+        //     dy = bomb.centerY - enemy.centerY;
 
 
-            //Check for a collision on the x axis
-            if (Math.abs(dx) < enemy.halfWidth) {
-                // console.log("vx : " + Math.abs(vx) + " enemy.halfWidth: " + enemy.halfWidth)
-                console.log("vy : " + Math.abs(vy) + " enemy.halfHeight: " + enemy.halfHeight)
-                //A collision might be occurring. Check for a collision on the y axis
-                if (Math.abs(dy) < enemy.halfHeight) {
-                    console.log("hit: true")
-                    //There's definitely a collision happening
-                    hit = true;
-                } else {
+        //     //Check for a collision on the x axis
+        //     if (Math.abs(dx) < enemy.halfWidth) {
+        //         // console.log("vx : " + Math.abs(vx) + " enemy.halfWidth: " + enemy.halfWidth)
+        //         console.log("vy : " + Math.abs(vy) + " enemy.halfHeight: " + enemy.halfHeight)
+        //         //A collision might be occurring. Check for a collision on the y axis
+        //         if (Math.abs(dy) < enemy.halfHeight) {
+        //             console.log("hit: true")
+        //             //There's definitely a collision happening
+        //             hit = true;
+        //         } else {
 
-                    //There's no collision on the y axis
-                    hit = false;
-                }
-            } else {
+        //             //There's no collision on the y axis
+        //             hit = false;
+        //         }
+        //     } else {
 
-                //There's no collision on the x axis
-                hit = false;
-            }
+        //         //There's no collision on the x axis
+        //         hit = false;
+        //     }
 
-            //`hit` will be either `true` or `false`
-            return hit;
-        };
+        //     //`hit` will be either `true` or `false`
+        //     return hit;
+        // };
 
         function boxesIntersect(a, b) {
             var ab = a.getBounds();
