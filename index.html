@@ -40,17 +40,13 @@
 
         //To change the background color
         app.renderer.backgroundColor = 0x6AA84F;
-        let asset_uris = ["images/rocket_1.png", "images/enemy_shuttle_1.png", "images/enemy_shuttle_3.png", "images/enemy_shuttle_2.png"];
-        let bomb_uri = ["images/bomb.png"];
+        let asset_uris = ["rocket_1.png", "enemy_shuttle_1.png", "enemy_shuttle_3.png", "enemy_shuttle_2.png"];
+        let bomb_uri = ["bomb.png"];
         // Add sprite for main spaceship
         //load an image and run the `setup` function when it's done
         // TODOs the below implementation sucks
         PIXI.loader
-            .add(asset_uris[0])
-            .add(asset_uris[1])
-            .add(asset_uris[2])
-            .add(asset_uris[3])
-            .add(bomb_uri)
+            .add("images/texture_atlas.json")
             .load(setup);
 
         let left = keyboard("ArrowLeft"),
@@ -184,12 +180,12 @@
 
 
         function initiateMainRocketSprite() {
-            main_rocket = new Sprite(resources[asset_uris[0]].texture);
+            main_rocket = new Sprite(resources["images/texture_atlas.json"].textures[asset_uris[0]]);
+            main_rocket.scale.set(0.15)
             main_rocket.anchor.x = 0;
             main_rocket.anchor.y = 0;
             main_rocket.vx = 1;
             main_rocket.vy = 1;
-            main_rocket.scale.set(0.05, 0.05);
             main_rocket.shot_delay = 0;
 
             // position sprite
@@ -204,13 +200,15 @@
         }
 
         function initiateEnemyRocketSprites() {
-            for (let index = 1; index < asset_uris.length; index++) {
-                enemy_rockets.push(new Sprite(resources[asset_uris[index % 3 + 1]].texture))
+            for (let index = 1; index < asset_uris.length * 10; index++) {
+                enemy_rockets.push(
+                    new Sprite(resources["images/texture_atlas.json"].textures[asset_uris[index % 3 + 1]])
+                )
                 enemy_rockets[index - 1].x = Math.ceil((Math.random() * (window.innerWidth) / 2 + (window.innerWidth) / 4));
                 enemy_rockets[index - 1].y = Math.ceil((Math.random() * (window.innerHeight) / 4 + (window.innerHeight) / 10));
                 // enemy_rockets[index - 1].scale.x = 1
                 // enemy_rockets[index - 1].scale.y = 1
-                enemy_rockets[index - 1].scale.set(0.2, 0.2);
+                enemy_rockets[index - 1].scale.set(0.15);
                 enemy_rockets[index - 1].vx = 1;
                 enemy_rockets[index - 1].vy = 1;
                 enemy_rockets[index - 1].rotation = Math.PI;
@@ -234,12 +232,12 @@
             if (main_rocket.shot_delay == 0) {
                 main_rocket.shot_delay = 10;
                 console.log("shoot a bomb at: " + main_rocket.x + " x " + main_rocket.y)
-                let tmp = new Sprite(resources[bomb_uri].texture)
-                tmp.x = main_rocket.x;
+                let tmp = new Sprite(resources["images/texture_atlas.json"].textures[bomb_uri])
+                tmp.scale.set(0.1);
+                tmp.x = main_rocket.x + (main_rocket.width - tmp.width)/2;
                 tmp.y = main_rocket.y;
                 tmp.anchor.x = 0;
                 tmp.anchor.y = 0;
-                tmp.scale.set(0.1);
                 tmp.vx = 1;
                 tmp.vy = 1;
                 bombs.push(tmp);
