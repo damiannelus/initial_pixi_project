@@ -1,3 +1,4 @@
+<!-- TUTORIAL LINK: https://github.com/kittykatattack/learningPixi#using-a-particlecontainer-to-group-sprites -->
 <!doctype html>
 <meta charset="utf-8">
 <title>Displaying the canvas</title>
@@ -5,7 +6,11 @@
 <body>
     <script src="js/pixi.min.js"></script>
     <script src="js/bump.js"></script>
+    <script src="js/keyboard.js"></script>
+    <script src="js/init_stage.js"></script>
     <script>
+        // TODO: split into components/smaller files
+        // 
 
         //Create a Pixi Application
         let app = new PIXI.Application({
@@ -42,9 +47,9 @@
         app.renderer.backgroundColor = 0x6AA84F;
         let asset_uris = ["rocket_1.png", "enemy_shuttle_1.png", "enemy_shuttle_3.png", "enemy_shuttle_2.png"];
         let bomb_uri = ["bomb.png"];
+
         // Add sprite for main spaceship
         //load an image and run the `setup` function when it's done
-        // TODOs the below implementation sucks
         PIXI.loader
             .add("images/texture_atlas.json")
             .load(setup);
@@ -81,22 +86,9 @@
         }
 
         function play(delta) {
-            // Update the velocity:
-
-            //Move the cat 1 pixel:
-            // let steering_wheel = Math.random();
-            // main_rocket.x = steering_wheel > 0.5 ? main_rocket.x + main_rocket.vx : main_rocket.x - main_rocket.vx;
-            // main_rocket.x = main_rocket.x < 0 ? 0 : main_rocket.x
-            // main_rocket.y = steering_wheel > 0.5 ? main_rocket.y + main_rocket.vy : main_rocket.y - main_rocket.vy;
-            // main_rocket.y = main_rocket.y < 0 ? 0 : main_rocket.y
-
-            // TODO move enemies
             moveEnemies();
 
-            // Check collisions
-
-            // TODO continue https://github.com/kittykatattack/learningPixi#using-a-particlecontainer-to-group-sprites
-            // Move
+            // Move the main spaceship
             if (right.isDown) {
                 main_rocket.x += main_rocket.vx
             } else if (left.isDown) {
@@ -117,115 +109,22 @@
             if (up.isDown) {
                 shotABomb()
             }
-
-            //Rotate
-            // if (down.isDown) {
-            //     rotateMainRocket("ccw");
-            // } else if (up.isDown) {
-            //     rotateMainRocket("cw");
-            // }
         }
 
         function rotateMainRocket(direction) {
             main_rocket.rotation = direction == "cw" ? main_rocket.rotation + (Math.PI / 20) : main_rocket.rotation - (Math.PI / 20)
         }
 
-        // TODO: prob. better way of managing keyboard
-        function keyboard(value) {
-            let key = {};
-            key.value = value;
-            key.isDown = false;
-            key.isUp = true;
-            key.press = undefined;
-            key.release = undefined;
-            //The `downHandler`
-            key.downHandler = event => {
-                if (event.key === key.value) {
-                    if (key.isUp && key.press) key.press();
-                    key.isDown = true;
-                    key.isUp = false;
-                    event.preventDefault();
-                }
-            };
-
-            //The `upHandler`
-            key.upHandler = event => {
-                if (event.key === key.value) {
-                    if (key.isDown && key.release) key.release();
-                    key.isDown = false;
-                    key.isUp = true;
-                    event.preventDefault();
-                }
-            };
-
-            //Attach event listeners
-            const downListener = key.downHandler.bind(key);
-            const upListener = key.upHandler.bind(key);
-
-            window.addEventListener(
-                "keydown", downListener, false
-            );
-            window.addEventListener(
-                "keyup", upListener, false
-            );
-
-            // Detach event listeners
-            key.unsubscribe = () => {
-                window.removeEventListener("keydown", downListener);
-                window.removeEventListener("keyup", upListener);
-            };
-
-            return key;
-        }
-
-
-        function initiateMainRocketSprite() {
-            main_rocket = new Sprite(resources["images/texture_atlas.json"].textures[asset_uris[0]]);
-            main_rocket.scale.set(0.15)
-            main_rocket.anchor.x = 0;
-            main_rocket.anchor.y = 0;
-            main_rocket.vx = 1;
-            main_rocket.vy = 1;
-            main_rocket.shot_delay = 0;
-
-            // position sprite
-            // main_rocket.x = Math.ceil((Math.random() * (window.innerWidth) / 2 + (window.innerWidth) / 4));
-            // main_rocket.y = Math.ceil((Math.random() * (window.innerHeight) / 4 + 10 * (window.innerHeight) / 16));
-            main_rocket.x = 120;
-            main_rocket.y = Math.ceil((Math.random() * (window.innerHeight) / 4 + 10 * (window.innerHeight) / 16));
-
-            //Add the mr to the stage
-            app.stage.addChild(main_rocket);
-
-        }
-
-        function initiateEnemyRocketSprites() {
-            for (let index = 1; index < asset_uris.length * 10; index++) {
-                enemy_rockets.push(
-                    new Sprite(resources["images/texture_atlas.json"].textures[asset_uris[index % 3 + 1]])
-                )
-                enemy_rockets[index - 1].x = Math.ceil((Math.random() * (window.innerWidth) / 2 + (window.innerWidth) / 4));
-                enemy_rockets[index - 1].y = Math.ceil((Math.random() * (window.innerHeight) / 4 + (window.innerHeight) / 10));
-                // enemy_rockets[index - 1].scale.x = 1
-                // enemy_rockets[index - 1].scale.y = 1
-                enemy_rockets[index - 1].scale.set(0.15);
-                enemy_rockets[index - 1].vx = 1;
-                enemy_rockets[index - 1].vy = 1;
-                enemy_rockets[index - 1].rotation = Math.PI;
-                enemies.addChild(enemy_rockets[index - 1]);
-            }
-
-            app.stage.addChild(enemies);
-        }
-
         function moveEnemies() {
-            // enemy_rockets.forEach(element => {
-            //     let steering_wheel = Math.random();
-            //     element.x = steering_wheel > 0.5 ? element.x + element.vx : element.x - element.vx;
-            //     element.x = element.x < 0 ? 0 : element.x
-            //     element.y = (Math.ceil(steering_wheel * 100) % 2) == 0 ? element.y + element.vy : element.y - element.vy;
-            //     element.y = element.y < 0 ? 0 : element.y
-            // });
+            let steering_wheel = Math.random();
+            console.log('steering_wheel :>> ', steering_wheel);
+            let xp = steering_wheel > 0.5 ? enemies.x + enemies.vx : enemies.x - enemies.vx;
+            // xp = enemies.xp < 0 ? 0 : enemies.x
+            let yp = (Math.ceil(steering_wheel * 100) % 2) == 0 ? enemies.y + enemies.vy : enemies.y - enemies.vy;
+            // yp = enemies.yp < 0 ? 0 : enemies.y
+            console.log('xp :>> ', xp);
+            console.log('yp :>> ', yp);
+            enemies.position.set(xp, yp);
         }
 
         function shotABomb() {
@@ -234,7 +133,7 @@
                 console.log("shoot a bomb at: " + main_rocket.x + " x " + main_rocket.y)
                 let tmp = new Sprite(resources["images/texture_atlas.json"].textures[bomb_uri])
                 tmp.scale.set(0.1);
-                tmp.x = main_rocket.x + (main_rocket.width - tmp.width)/2;
+                tmp.x = main_rocket.x + (main_rocket.width - tmp.width) / 2;
                 tmp.y = main_rocket.y;
                 tmp.anchor.x = 0;
                 tmp.anchor.y = 0;
