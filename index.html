@@ -65,6 +65,8 @@
         let b = new Bump(PIXI);
 
         //This `setup` function will run when the image has loaded
+        // TODO: display score
+        // TODO: let enemies shoot
         function setup() {
 
             //Create the main rocket sprite
@@ -104,6 +106,7 @@
             main_rocket.shot_delay = main_rocket.shot_delay > 0 ? main_rocket.shot_delay - 1 : 0
 
             // Shoots 
+            // TODO: shooting should be done with space
             if (up.isDown) {
                 shotABomb()
             }

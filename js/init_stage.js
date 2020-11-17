@@ -19,6 +19,7 @@ function initiateMainRocketSprite() {
 }
 
 function initiateEnemyRocketSprites() {
+    // TODO: ENEMY SPACESHIPS SHOULD BE IN A DISTANCE ONE FROM ANOTHER
     for (let index = 1; index < asset_uris.length * 10; index++) {
         enemy_rockets.push(
             new Sprite(resources["images/texture_atlas.json"].textures[asset_uris[index % 3 + 1]])
