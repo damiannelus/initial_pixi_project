@@ -39,3 +39,21 @@ function initiateEnemyRocketSprites() {
 
     app.stage.addChild(enemies);
 }
+
+function initiateGameScore() {
+    style = new PIXI.TextStyle({
+        fontFamily: "Arial",
+        fontSize: 36,
+        fill: "white",
+        stroke: '#ff3300',
+        strokeThickness: 4,
+        dropShadow: true,
+        dropShadowColor: "#000000",
+        dropShadowBlur: 4,
+        dropShadowAngle: Math.PI / 6,
+        dropShadowDistance: 6,
+    });
+    message = new PIXI.Text("Hello Pixi!", style);
+    app.stage.addChild(message);
+    message.position.set(54, 96);
+}

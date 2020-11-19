@@ -5,6 +5,7 @@
 
 <body>
     <script src="js/pixi.min.js"></script>
+    <!-- TODO colision detection should work better -->
     <script src="js/bump.js"></script>
     <script src="js/keyboard.js"></script>
     <script src="js/init_stage.js"></script>
@@ -63,6 +64,9 @@
         let enemies = new PIXI.Container();
         let bombs = [];
         let b = new Bump(PIXI);
+        let game_score = 0;
+        let style;
+        let message;
 
         //This `setup` function will run when the image has loaded
         // TODO: display score
@@ -71,6 +75,9 @@
 
             //Create the main rocket sprite
             initiateMainRocketSprite();
+
+            // Create score style
+            initiateGameScore();
 
             // create enemy rockets
             initiateEnemyRocketSprites();
@@ -98,7 +105,10 @@
             // move bombs
             moveBombs();
 
+            message.text = `Your score: ${game_score}`;
+
             // check enemies x bombs colisions
+            // TODO: end game
             checkEnemiesHits();
 
             destroyBombsOutsideStage();

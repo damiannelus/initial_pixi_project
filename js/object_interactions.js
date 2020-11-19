@@ -41,13 +41,10 @@ function rotateMainRocket(direction) {
 
 function moveEnemies() {
     let steering_wheel = Math.random();
-    console.log('steering_wheel :>> ', steering_wheel);
     let xp = steering_wheel > 0.5 ? enemies.x + enemies.vx : enemies.x - enemies.vx;
     // xp = enemies.xp < 0 ? 0 : enemies.x
     let yp = (Math.ceil(steering_wheel * 100) % 2) == 0 ? enemies.y + enemies.vy : enemies.y - enemies.vy;
     // yp = enemies.yp < 0 ? 0 : enemies.y
-    console.log('xp :>> ', xp);
-    console.log('yp :>> ', yp);
     enemies.position.set(xp, yp);
 }
 
@@ -57,7 +54,8 @@ function checkEnemiesHits() {
             if (b.hit(bomb, er)) {
                 enemies.removeChild(er);
                 enemy_rockets.splice(index, 1)
-                console.log("rocket to be destroyed: " + index);
+                game_score += 1;
+                console.log('game_score :>> ', game_score);
             }
         });
     });
