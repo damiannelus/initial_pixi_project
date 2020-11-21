@@ -57,7 +57,7 @@
             up = keyboard("ArrowUp"),
             right = keyboard("ArrowRight"),
             down = keyboard("ArrowDown"),
-            space = keyboard("ShiftLeft");
+            space = keyboard(" ");
 
         let main_rocket;
         let enemy_rockets = [];
@@ -115,9 +115,8 @@
 
             main_rocket.shot_delay = main_rocket.shot_delay > 0 ? main_rocket.shot_delay - 1 : 0
 
-            // Shoots 
-            // TODO: shooting should be done with space
-            if (up.isDown) {
+            // Shoots
+            if (space.isDown) {
                 shotABomb()
             }
         }

@@ -1,3 +1,4 @@
+// key values mappings
 function keyboard(value) {
     let key = {};
     key.value = value;
