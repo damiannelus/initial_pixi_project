@@ -67,11 +67,15 @@
         let game_score = 0;
         let style;
         let message;
+        let gameOverScene, gameScene;
 
         //This `setup` function will run when the image has loaded
         // TODO: display score
         // TODO: let enemies shoot
         function setup() {
+
+            // starting and endingedning the game
+            initScenes();
 
             //Create the main rocket sprite
             initiateMainRocketSprite();
@@ -86,6 +90,8 @@
             //Start the game loop by adding the `gameLoop` function to
             //Pixi's `ticker` and providing it with a `delta` argument.
             app.ticker.add(delta => gameLoop(delta));
+
+            
         }
 
         function gameLoop(delta) {
@@ -94,7 +100,6 @@
 
         function play(delta) {
             moveEnemies();
-
             // Move the main spaceship
             if (right.isDown) {
                 main_rocket.x += main_rocket.vx
@@ -108,7 +113,6 @@
             message.text = `Your score: ${game_score}`;
 
             // check enemies x bombs colisions
-            // TODO: end game
             checkEnemiesHits();
 
             destroyBombsOutsideStage();
@@ -118,6 +122,12 @@
             // Shoots
             if (space.isDown) {
                 shotABomb()
+            }
+
+            // ends game
+            if (enemies.children.length == 0) {
+                gameOverScene.visible = true;
+                gameScene.visible = false;
             }
         }
     </script>

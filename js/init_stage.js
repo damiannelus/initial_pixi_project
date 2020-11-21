@@ -14,7 +14,7 @@ function initiateMainRocketSprite() {
     main_rocket.y = Math.ceil((Math.random() * (window.innerHeight) / 4 + 10 * (window.innerHeight) / 16));
 
     //Add the mr to the stage
-    app.stage.addChild(main_rocket);
+    gameScene.addChild(main_rocket);
 
 }
 
@@ -37,7 +37,7 @@ function initiateEnemyRocketSprites() {
     enemies.vx = 1;
     enemies.vy = 1;
 
-    app.stage.addChild(enemies);
+    gameScene.addChild(enemies);
 }
 
 function initiateGameScore() {
@@ -54,6 +54,24 @@ function initiateGameScore() {
         dropShadowDistance: 6,
     });
     message = new PIXI.Text("Hello Pixi!", style);
-    app.stage.addChild(message);
+    gameScene.addChild(message);
     message.position.set(54, 96);
+}
+
+function initScenes() {
+    gameOverScene = new PIXI.Container();
+    app.stage.addChild(gameOverScene);
+    gameOverScene.visible = false;
+    let style = new PIXI.TextStyle({
+        fontFamily: "Futura",
+        fontSize: 64,
+        fill: "white"
+      });
+    message = new PIXI.Text("The End!", style);
+    message.x = 120;
+    message.y = app.stage.height / 2 - 32;
+    gameOverScene.addChild(message);
+
+    gameScene = new PIXI.Container();
+    app.stage.addChild(gameScene);
 }

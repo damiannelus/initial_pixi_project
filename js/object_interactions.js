@@ -55,7 +55,6 @@ function checkEnemiesHits() {
                 enemies.removeChild(er);
                 enemy_rockets.splice(index, 1)
                 game_score += 1;
-                console.log('game_score :>> ', game_score);
             }
         });
     });
