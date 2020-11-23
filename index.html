@@ -62,7 +62,9 @@
         let main_rocket;
         let enemy_rockets = [];
         let enemies = new PIXI.Container();
+        // consider making bombs and enemy bombs smarter
         let bombs = [];
+        let enemyBombs = [];
         let b = new Bump(PIXI);
         let game_score = 0;
         let style;
@@ -70,7 +72,6 @@
         let gameOverScene, gameScene;
 
         //This `setup` function will run when the image has loaded
-        // TODO: display score
         // TODO: let enemies shoot
         function setup() {
 
@@ -119,15 +120,17 @@
 
             main_rocket.shot_delay = main_rocket.shot_delay > 0 ? main_rocket.shot_delay - 1 : 0
 
-            // Shoots
+            // Shoots own bombs
             if (space.isDown) {
                 shotABomb()
             }
 
+            // shoot enemy bombs
+            shotEnemyBomb();
+
             // ends game
             if (enemies.children.length == 0) {
-                gameOverScene.visible = true;
-                gameScene.visible = false;
+                endGame();
             }
         }
     </script>

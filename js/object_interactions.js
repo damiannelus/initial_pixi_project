@@ -1,7 +1,6 @@
 function shotABomb() {
     if (main_rocket.shot_delay == 0) {
         main_rocket.shot_delay = 10;
-        console.log("shoot a bomb at: " + main_rocket.x + " x " + main_rocket.y)
         let tmp = new Sprite(resources["images/texture_atlas.json"].textures[bomb_uri])
         tmp.scale.set(0.1);
         tmp.x = main_rocket.x + (main_rocket.width - tmp.width) / 2;
@@ -15,8 +14,29 @@ function shotABomb() {
     }
 }
 
+function shotEnemyBomb() {
+    enemy_rockets.forEach(element => {
+        let willEnemyShoot = Math.random() > 0.9995 ? true : false;
+        if (willEnemyShoot) {
+            let tmp = new Sprite(resources["images/texture_atlas.json"].textures[bomb_uri])
+            tmp.scale.set(0.1);
+            tmp.x = element.x + (element.width - tmp.width) / 2;
+            tmp.y = element.y;
+            tmp.anchor.x = 0;
+            tmp.anchor.y = 0;
+            tmp.vy = -1;
+            enemyBombs.push(tmp);
+            app.stage.addChild(tmp);
+        }
+    });
+}
+
 function moveBombs() {
     bombs.forEach(element => {
+        // element.x -= element.vx;
+        element.y -= element.vy;
+    });
+    enemyBombs.forEach(element => {
         // element.x -= element.vx;
         element.y -= element.vy;
     });
@@ -25,9 +45,18 @@ function moveBombs() {
 function destroyBombsOutsideStage() {
     if (bombs.length > 0) {
         for (let index = 0; index < bombs.length; index++) {
-            if (bombs[index].y < 0) {
+            if (bombs[index].y < 0 || bombs[index].y > window.innerHeight) {
                 app.stage.removeChild(bombs[index]);
                 bombs.shift();
+            }
+
+        }
+    }
+    if (enemyBombs.length > 0) {
+        for (let index = 0; index < enemyBombs.length; index++) {
+            if (enemyBombs[index].y < 0 || enemyBombs[index].y > window.innerHeight) {
+                app.stage.removeChild(enemyBombs[index]);
+                enemyBombs.shift();
             }
 
         }
@@ -57,5 +86,19 @@ function checkEnemiesHits() {
                 game_score += 1;
             }
         });
+    });
+}
+
+function endGame() {
+    // TODO extend what "end game" is
+    gameOverScene.visible = true;
+    gameScene.visible = false;
+}
+
+function checkHits() {
+    enemyBombs.forEach(bomb => {
+        if (b.hit(bomb, main_rocket)) {
+            endGame()
+        }
     });
 }
