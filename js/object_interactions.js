@@ -1,5 +1,5 @@
 function shotABomb() {
-    if (main_rocket.shot_delay == 0) {
+    if (main_rocket.shot_delay == 0 && gameScene.visible) {
         main_rocket.shot_delay = 10;
         let tmp = new Sprite(resources["images/texture_atlas.json"].textures[bomb_uri])
         tmp.scale.set(0.1);
@@ -15,20 +15,22 @@ function shotABomb() {
 }
 
 function shotEnemyBomb() {
-    enemy_rockets.forEach(element => {
-        let willEnemyShoot = Math.random() > 0.9995 ? true : false;
-        if (willEnemyShoot) {
-            let tmp = new Sprite(resources["images/texture_atlas.json"].textures[bomb_uri])
-            tmp.scale.set(0.1);
-            tmp.x = element.x + (element.width - tmp.width) / 2;
-            tmp.y = element.y;
-            tmp.anchor.x = 0;
-            tmp.anchor.y = 0;
-            tmp.vy = -1;
-            enemyBombs.push(tmp);
-            app.stage.addChild(tmp);
-        }
-    });
+    if (gameScene.visible) {
+        enemy_rockets.forEach(element => {
+            let willEnemyShoot = Math.random() > 0.9995 ? true : false;
+            if (willEnemyShoot) {
+                let tmp = new Sprite(resources["images/texture_atlas.json"].textures[bomb_uri])
+                tmp.scale.set(0.1);
+                tmp.x = element.x + (element.width - tmp.width) / 2;
+                tmp.y = element.y;
+                tmp.anchor.x = 0;
+                tmp.anchor.y = 0;
+                tmp.vy = -1;
+                enemyBombs.push(tmp);
+                app.stage.addChild(tmp);
+            }
+        });
+    }
 }
 
 function moveBombs() {
@@ -93,6 +95,9 @@ function endGame() {
     // TODO extend what "end game" is
     gameOverScene.visible = true;
     gameScene.visible = false;
+    bombs = [];
+    enemyBombs = [];
+    app.stage.removeChild
 }
 
 function checkHits() {

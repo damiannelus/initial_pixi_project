@@ -72,7 +72,6 @@
         let gameOverScene, gameScene;
 
         //This `setup` function will run when the image has loaded
-        // TODO: let enemies shoot
         function setup() {
 
             // starting and endingedning the game
@@ -115,6 +114,9 @@
 
             // check enemies x bombs colisions
             checkEnemiesHits();
+
+            // check the main ship x enemy bombs colisions
+            checkHits();
 
             destroyBombsOutsideStage();
 
