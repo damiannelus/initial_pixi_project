@@ -76,16 +76,18 @@ function moveEnemies() {
     // xp = enemies.xp < 0 ? 0 : enemies.x
     let yp = (Math.ceil(steering_wheel * 100) % 2) == 0 ? enemies.y + enemies.vy : enemies.y - enemies.vy;
     // yp = enemies.yp < 0 ? 0 : enemies.y
-    enemies.position.set(xp, yp);
+    // enemies.position.set(xp, yp);
 }
 
 function checkEnemiesHits() {
     bombs.forEach(bomb => {
         enemy_rockets.forEach((er, index) => {
             if (b.hit(bomb, er)) {
-                enemies.removeChild(er);
-                enemy_rockets.splice(index, 1)
+                // enemies.removeChild(er);
+                // enemy_rockets.splice(index, 1)
+                bomb.scale.set(2)
                 game_score += 1;
+                state = stop;
             }
         });
     });

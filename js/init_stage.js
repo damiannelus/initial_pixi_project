@@ -20,14 +20,15 @@ function initiateMainRocketSprite() {
 
 function initiateEnemyRocketSprites() {
     let random_sprite = 0;
-    for (let index = 1; index < asset_uris.length * 10; index++) {
+    for (let index = 1; index < asset_uris.length; index++) {
         random_sprite = Math.ceil(Math.random() * 3);
         enemy_rockets.push(
             new Sprite(resources["images/texture_atlas.json"].textures[asset_uris[random_sprite]])
         )
-        enemy_rockets[index - 1].x = Math.ceil(window.innerWidth/10 + (enemy_rockets[index - 1].width*(index%14))/5);
-        // console.log('X x Y :>> ',Math.ceil(window.innerWidth/10 + enemy_rockets[index - 1].width*(index%4)), ' x ', Math.ceil(window.innerHeight/10 + enemy_rockets[index - 1].height*(index%6)));
-        enemy_rockets[index - 1].y = Math.ceil(window.innerHeight/10 + (enemy_rockets[index - 1].height*(index/6))/10);
+        // enemy_rockets[index - 1].x = Math.ceil(window.innerWidth/10 + (enemy_rockets[index - 1].width*(index%14))/5);
+        // enemy_rockets[index - 1].y = Math.ceil(window.innerHeight/10 + (enemy_rockets[index - 1].height*(index/6))/10);
+        enemy_rockets[index - 1].x = 100 + index*300;
+        enemy_rockets[index - 1].y = 400;
         enemy_rockets[index - 1].scale.set(0.15);
         enemy_rockets[index - 1].vx = 1;
         enemy_rockets[index - 1].vy = 1;
