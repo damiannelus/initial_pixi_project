@@ -30,13 +30,14 @@ function initiateEnemyRocketSprites() {
         enemy_rockets[index - 1].x = 100 + index*300;
         enemy_rockets[index - 1].y = 400;
         enemy_rockets[index - 1].scale.set(0.15);
-        enemy_rockets[index - 1].vx = 1;
-        enemy_rockets[index - 1].vy = 1;
+        enemy_rockets[index - 1].vx = 10;
+        enemy_rockets[index - 1].vy = 10;
         enemy_rockets[index - 1].rotation = Math.PI;
+        displayHelperText(enemy_rockets[index - 1]);
         enemies.addChild(enemy_rockets[index - 1]);
     }
-    enemies.vx = 1;
-    enemies.vy = 1;
+    enemies.vx = 10;
+    enemies.vy = 10 ;
 
     gameScene.addChild(enemies);
 }
@@ -54,7 +55,7 @@ function initiateGameScore() {
         dropShadowAngle: Math.PI / 6,
         dropShadowDistance: 6,
     });
-    message = new PIXI.Text("Hello Pixi!", style);
+    message = new PIXI.Text("Game Score initiated", style);
     gameScene.addChild(message);
     message.position.set(54, 96);
 }

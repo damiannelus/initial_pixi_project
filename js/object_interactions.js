@@ -72,17 +72,21 @@ function rotateMainRocket(direction) {
 
 function moveEnemies() {
     let steering_wheel = Math.random();
-    let xp = steering_wheel > 0.5 ? enemies.x + enemies.vx : enemies.x - enemies.vx;
+    let xp = steering_wheel > 0.01 ? enemies.x + enemies.vx : enemies.x - enemies.vx;
     // xp = enemies.xp < 0 ? 0 : enemies.x
     let yp = (Math.ceil(steering_wheel * 100) % 2) == 0 ? enemies.y + enemies.vy : enemies.y - enemies.vy;
     // yp = enemies.yp < 0 ? 0 : enemies.y
-    // enemies.position.set(xp, yp);
+    enemies.position.set(xp, yp);
+    enemy_rockets.forEach(element => {
+        element.message.text = `${enemies.toGlobal(element.position).x} x ${enemies.toGlobal(element.position).y}`
+        // console.log(`${enemies.toGlobal(element.position).x} x ${enemies.toGlobal(element.position).y}`);
+    });
 }
 
 function checkEnemiesHits() {
     bombs.forEach(bomb => {
         enemy_rockets.forEach((er, index) => {
-            if (b.hit(bomb, er)) {
+            if (b.hit(bomb, er, false, false, true)) {
                 // enemies.removeChild(er);
                 // enemy_rockets.splice(index, 1)
                 bomb.scale.set(2)
