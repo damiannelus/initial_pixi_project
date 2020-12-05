@@ -17,7 +17,7 @@ function shotABomb() {
 function shotEnemyBomb() {
     if (gameScene.visible) {
         enemy_rockets.forEach(element => {
-            let willEnemyShoot = Math.random() > 0.9995 ? true : false;
+            let willEnemyShoot = Math.random() > 0.995 ? true : false;
             if (willEnemyShoot) {
                 let tmp = new Sprite(resources["images/texture_atlas.json"].textures[bomb_uri])
                 tmp.scale.set(0.1);
@@ -57,9 +57,8 @@ function destroyBombsOutsideStage() {
     }
     if (enemyBombs.length > 0) {
         for (let index = 0; index < enemyBombs.length; index++) {
-            if (enemyBombs[index].y < 0 || enemyBombs[index].y > window.innerHeight) {
+            if (enemyBombs[index].gy > window.innerHeight) {
                 app.stage.removeChild(enemyBombs[index]);
-                enemyBombs.shift();
             }
 
         }
@@ -101,7 +100,7 @@ function endGame() {
     gameScene.visible = false;
     bombs = [];
     enemyBombs = [];
-    app.stage.removeChild
+    app.stage.getChildByName(gameScene).removeChildren();
 }
 
 function checkHits() {

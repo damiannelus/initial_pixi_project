@@ -20,13 +20,13 @@ function initiateMainRocketSprite() {
 
 function initiateEnemyRocketSprites() {
     let random_sprite = 0;
-    for (let index = 1; index < asset_uris.length; index++) {
+    for (let index = 1; index < asset_uris.length * 10; index++) {
         random_sprite = Math.ceil(Math.random() * 3);
         enemy_rockets.push(
             new Sprite(resources["images/texture_atlas.json"].textures[asset_uris[random_sprite]])
         )
-        enemy_rockets[index - 1].x = 100 + index*300;
-        enemy_rockets[index - 1].y = 400;
+        enemy_rockets[index - 1].x = 100 + (index%15)*100 + index;
+        enemy_rockets[index - 1].y = 200 + Math.ceil(index/7) * 15;
         enemy_rockets[index - 1].scale.set(0.15);
         enemy_rockets[index - 1].rotation = Math.PI;
         // displayHelperText(enemy_rockets[index - 1]);
