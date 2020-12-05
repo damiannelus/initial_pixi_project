@@ -21,8 +21,9 @@ function shotEnemyBomb() {
             if (willEnemyShoot) {
                 let tmp = new Sprite(resources["images/texture_atlas.json"].textures[bomb_uri])
                 tmp.scale.set(0.1);
-                tmp.x = element.x + (element.width - tmp.width) / 2;
-                tmp.y = element.y;
+                tmp.x = enemies.toGlobal(element.position).x - Math.ceil(((element.width + tmp.width) / 2));
+                tmp.y = enemies.toGlobal(element.position).y;
+                console.log(`${enemies.toGlobal(element.position).x} x ${enemies.toGlobal(element.position).y}`);
                 tmp.anchor.x = 0;
                 tmp.anchor.y = 0;
                 tmp.vy = -1;
