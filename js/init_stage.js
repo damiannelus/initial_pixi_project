@@ -25,19 +25,15 @@ function initiateEnemyRocketSprites() {
         enemy_rockets.push(
             new Sprite(resources["images/texture_atlas.json"].textures[asset_uris[random_sprite]])
         )
-        // enemy_rockets[index - 1].x = Math.ceil(window.innerWidth/10 + (enemy_rockets[index - 1].width*(index%14))/5);
-        // enemy_rockets[index - 1].y = Math.ceil(window.innerHeight/10 + (enemy_rockets[index - 1].height*(index/6))/10);
         enemy_rockets[index - 1].x = 100 + index*300;
         enemy_rockets[index - 1].y = 400;
         enemy_rockets[index - 1].scale.set(0.15);
-        enemy_rockets[index - 1].vx = 10;
-        enemy_rockets[index - 1].vy = 10;
         enemy_rockets[index - 1].rotation = Math.PI;
-        displayHelperText(enemy_rockets[index - 1]);
+        // displayHelperText(enemy_rockets[index - 1]);
         enemies.addChild(enemy_rockets[index - 1]);
     }
-    enemies.vx = 10;
-    enemies.vy = 10 ;
+    enemies.vx = 1;
+    enemies.vy = 1;
 
     gameScene.addChild(enemies);
 }
