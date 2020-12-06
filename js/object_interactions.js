@@ -1,3 +1,6 @@
+const leftMargin = 100, rightMargin = 100, topMargin = 100, bottomMargin = Math.floor(window.innerHeight /2);
+
+
 function shotABomb() {
     if (main_rocket.shot_delay == 0 && gameScene.visible) {
         main_rocket.shot_delay = 10;
@@ -17,13 +20,13 @@ function shotABomb() {
 function shotEnemyBomb() {
     if (gameScene.visible) {
         enemy_rockets.forEach(element => {
-            let willEnemyShoot = Math.random() > 0.995 ? true : false;
+            let willEnemyShoot = Math.random() > 0.9995 ? true : false;
             if (willEnemyShoot) {
                 let tmp = new Sprite(resources["images/texture_atlas.json"].textures[bomb_uri])
                 tmp.scale.set(0.1);
                 tmp.x = enemies.toGlobal(element.position).x - Math.ceil(((element.width + tmp.width) / 2));
                 tmp.y = enemies.toGlobal(element.position).y;
-                console.log(`${enemies.toGlobal(element.position).x} x ${enemies.toGlobal(element.position).y}`);
+                // console.log(`${enemies.toGlobal(element.position).x} x ${enemies.toGlobal(element.position).y}`);
                 tmp.anchor.x = 0;
                 tmp.anchor.y = 0;
                 tmp.vy = -1;
@@ -71,12 +74,24 @@ function rotateMainRocket(direction) {
 }
 
 function moveEnemies() {
-    let steering_wheel = Math.random();
-    let xp = steering_wheel > 0.5 ? enemies.x + enemies.vx : enemies.x - enemies.vx;
-    // xp = enemies.xp < 0 ? 0 : enemies.x
-    let yp = (Math.ceil(steering_wheel * 100) % 2) == 0 ? enemies.y + enemies.vy : enemies.y - enemies.vy;
-    // yp = enemies.yp < 0 ? 0 : enemies.y
-    enemies.position.set(xp, yp);
+    let steering_wheel = Math.random() > 0.5;
+    // Check if move is possible based on the steering wheel?
+    let dx = enemies.x;
+    if (steering_wheel && enemies.x + enemies.vx < window.innerWidth - enemies.width - rightMargin) {
+        dx = enemies.x + enemies.vx;
+    } else if(enemies.x - enemies.vx < leftMargin) {
+        dx = enemies.x - enemies.vx
+    }
+
+    // Check if move is possible based on the steering wheel?
+    let dy = enemies.y;
+    if (steering_wheel && enemies.y + enemies.vy < window.innerHeight - enemies.height - bottomMargin) {
+        dy = enemies.y + enemies.vy;
+    } else if( enemies.y - enemies.vy > topMargin) {
+        dy = enemies.y - enemies.vy;
+    }
+
+    enemies.position.set(dx, dy);
     // enemy_rockets.forEach(element => {
     //     element.message.text = `${enemies.toGlobal(element.position).x} x ${enemies.toGlobal(element.position).y}`
     // });

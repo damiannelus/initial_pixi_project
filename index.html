@@ -102,12 +102,11 @@
         function play(delta) {
             moveEnemies();
             // Move the main spaceship
-            if (right.isDown) {
+            if (right.isDown && main_rocket.x + main_rocket.vx < window.innerWidth - main_rocket.width) {
                 main_rocket.x += main_rocket.vx
-            } else if (left.isDown) {
+            } else if (left.isDown && main_rocket.x - main_rocket.vx > 0) {
                 main_rocket.x -= main_rocket.vx
             }
-
             // move bombs
             moveBombs();
 
